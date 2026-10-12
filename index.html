@@ -211,8 +211,8 @@
   .chat-body{flex:1;overflow-y:auto;padding:clamp(18px,3vw,22px) clamp(20px,3vw,26px);display:flex;flex-direction:column;gap:12px;min-height:220px}
   .msg{max-width:78%;padding:12px 16px;border-radius:14px;font-size:clamp(12px,1.8vw,14px);line-height:1.5;white-space:pre-wrap;word-break:break-word}
   .msg small{display:block;font-size:10px;opacity:.55;margin-top:6px;letter-spacing:.05em}
-  .msg.client{align-self:flex-end;background:var(--aqua-dim);border:1px solid rgba(70,224,192,.3);border-bottom-right-radius:4px}
-  .msg.owner{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .msg.client{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .msg.owner{align-self:flex-end;background:var(--aqua-dim);border:1px solid rgba(70,224,192,.3);border-bottom-right-radius:4px}
   .msg .sys{background:none;border:none;align-self:center;color:var(--mut);font-size:12px;text-align:center;padding:0}
   .offer-card{align-self:stretch;background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.35);
     border-radius:14px;padding:16px 18px}
@@ -273,6 +273,15 @@
   .st-sel{background:var(--panel);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:8px;font-size:clamp(11px,1.6vw,13px);outline:none;cursor:pointer}
   .icon-btn{background:none;border:none;color:var(--mut);font-size:clamp(15px,2.2vw,17px);transition:color .2s;padding:6px}
   .icon-btn:hover{color:var(--red)}
+  @media(max-width:768px){
+    .ord-table{display:block;overflow-x:auto;white-space:nowrap}
+    .ord-table thead{display:none}
+    .ord-table tbody{display:block}
+    .ord-table tr{display:block;margin-bottom:16px;border:1px solid var(--line);border-radius:12px;padding:16px;background:var(--bg2)}
+    .ord-table td{display:flex;justify-content:space-between;padding:8px 0;border:none;white-space:normal}
+    .ord-table td::before{content:attr(data-l);color:var(--mut);font-size:11px;text-transform:uppercase;letter-spacing:.1em;margin-right:12px}
+    .ord-table .acts{display:none}
+  }
   .empty-state{text-align:center;padding:clamp(50px,6vw,70px) 20px;color:var(--mut)}
   .empty-state i{font-size:clamp(36px,5vw,44px);color:var(--aqua);opacity:.6;margin-bottom:16px;display:block}
   .empty-state p{font-size:clamp(13px,2vw,15px)}
@@ -283,6 +292,11 @@
   /* список чатов в кабинете */
   .chats-grid{display:grid;grid-template-columns:clamp(280px,35vw,340px) 1fr;gap:20px;align-items:start}
   @media(max-width:900px){.chats-grid{grid-template-columns:1fr}}
+  @media(max-width:600px){
+    .owner-chat{max-height:60vh}
+    .offer-form{padding:12px 16px;gap:8px}
+    .chat-input{padding:12px 16px}
+  }
   .chat-list{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2)}
   .chat-item{padding:clamp(14px,2vw,16px) clamp(16px,2.5vw,18px);border-bottom:1px solid var(--line);cursor:pointer;transition:.2s;position:relative}
   .chat-item:last-child{border-bottom:none}
@@ -333,7 +347,7 @@
 <div class="hero" id="top">
   <canvas id="waterCanvas"></canvas>
   <div class="hero-inner">
-    <div class="kicker">Профессиональный автоуход · Конюшня для вашего авто</div>
+    <div class="kicker">Профессиональный автоуход</div>
     <h1>
       <span class="row"><span>ВАШЕ АВТО —</span></span>
       <span class="row"><span class="outline">НАША</span></span>
@@ -978,6 +992,16 @@ function renderServiceAdmin(){
       <div style="font-family:'Unbounded';font-weight:700">${fmtRub(s.price)}</div>
       <div style="font-size:13px;color:var(--mut)">${fmtDur(s.min)}</div>
       <div style="display:flex;gap:8px"><button class="btn sm" onclick="editService('${s.id}')"><i class="ph ph-pencil-simple"></i></button><button class="btn sm" onclick="deleteService('${s.id}')"><i class="ph ph-trash"></i></button></div>`;
+    // Адаптация для мобильных
+    if(window.innerWidth < 768){
+      el.style.cssText='display:block;padding:16px 0;border-bottom:1px solid var(--line)';
+      el.innerHTML=`<div style="margin-bottom:12px"><b style="font-size:15px">${s.name}</b><div style="font-size:12px;color:var(--mut);margin-top:5px">${s.desc} · ${fmtDur(s.min)}</div></div>
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px">
+          <span style="font-family:'Unbounded';font-weight:700">${fmtRub(s.price)}</span>
+          <span style="font-size:13px;color:var(--mut)">${fmtDur(s.min)}</span>
+        </div>
+        <div style="display:flex;gap:8px"><button class="btn sm" onclick="editService('${s.id}')"><i class="ph ph-pencil-simple"></i></button><button class="btn sm" onclick="deleteService('${s.id}')"><i class="ph ph-trash"></i></button></div>`;
+    }
     box.appendChild(el);
   });
 }
@@ -1135,7 +1159,8 @@ function renderOwnerChat(){
       body.appendChild(card);
     } else {
       const el = document.createElement('div');
-      el.className = 'msg ' + (m.from==='client' ? 'client' : 'owner');
+      // В чате владельца: его сообщения справа, клиента слева
+      el.className = 'msg ' + (m.from==='owner' ? 'owner' : 'client');
       el.textContent = m.text;
       el.appendChild(Object.assign(document.createElement('small'),{textContent:m.ts}));
       body.appendChild(el);
