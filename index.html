@@ -1,0 +1,1220 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Car Stables — профессиональный автоуход</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Unbounded:wght@300;500;700;900&family=Manrope:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/regular/style.css">
+<link rel="stylesheet" href="https://unpkg.com/@phosphor-icons/web@2.1.1/src/fill/style.css">
+<style>
+  :root{
+    --bg:#07090c; --bg2:#0b0f13; --panel:#0e1419;
+    --line:rgba(255,255,255,.08); --line2:rgba(255,255,255,.16);
+    --txt:#e9eef1; --mut:#7d8a92; --aqua:#46e0c0; --aqua-dim:rgba(70,224,192,.14);
+    --red:#ff6b5e; --amber:#ffd166;
+  }
+  *{margin:0;padding:0;box-sizing:border-box}
+  html{scroll-behavior:smooth}
+  body{background:var(--bg);color:var(--txt);font-family:'Manrope',sans-serif;overflow-x:hidden}
+  ::selection{background:var(--aqua);color:#04120e}
+  h1,h2,h3,.unb{font-family:'Unbounded',sans-serif}
+  button{font-family:inherit;cursor:pointer}
+  input,select,textarea{font-family:inherit}
+
+  header{position:fixed;top:0;left:0;right:0;z-index:50;display:flex;align-items:center;justify-content:space-between;
+    padding:0 clamp(12px,4vw,48px);height:72px;border-bottom:1px solid var(--line);
+    background:rgba(7,9,12,.72);backdrop-filter:blur(14px)}
+  .logo{font-family:'Unbounded';font-weight:900;font-size:clamp(16px,4vw,20px);letter-spacing:.06em;display:flex;align-items:center;gap:10px;text-decoration:none;color:var(--txt)}
+  .logo i{color:var(--aqua);font-size:clamp(18px,4vw,22px)}
+  .logo em{font-style:normal;color:var(--aqua)}
+  nav{display:flex;gap:clamp(16px,3vw,28px)}
+  nav a{color:var(--mut);text-decoration:none;font-size:clamp(12px,2vw,14px);font-weight:600;letter-spacing:.04em;transition:color .2s}
+  nav a:hover{color:var(--txt)}
+  .hdr-btns{display:flex;gap:8px;align-items:center}
+  .btn{border:1px solid var(--line2);background:transparent;color:var(--txt);padding:clamp(8px,2vw,20px) clamp(12px,3vw,20px);border-radius:100px;
+    font-size:clamp(11px,2vw,13px);font-weight:700;letter-spacing:.05em;display:inline-flex;align-items:center;gap:6px;transition:.25s}
+  .btn:hover{border-color:var(--aqua);color:var(--aqua)}
+  .btn.solid{background:var(--aqua);border-color:var(--aqua);color:#04120e}
+  .btn.solid:hover{background:#6cf0d6;color:#04120e}
+  .btn.amber{border-color:var(--amber);color:var(--amber)}
+  .btn.amber:hover{background:var(--amber);color:#12100a}
+  .btn.sm{padding:6px 12px;font-size:11px}
+  .btn:disabled{opacity:.4;pointer-events:none}
+  @media(max-width:820px){nav{display:none}}
+  @media(max-width:480px){
+    .hdr-btns{gap:6px}
+    .btn{padding:8px 12px;font-size:11px}
+    .logo{font-size:16px}
+    .logo i{font-size:18px}
+  }
+
+  .hero{position:relative;min-height:100vh;display:flex;flex-direction:column;justify-content:center;
+    padding:100px clamp(16px,5vw,64px) 120px}
+  #waterCanvas{position:absolute;inset:0;width:100%;height:100%;pointer-events:none}
+  .hero-inner{position:relative;z-index:2;max-width:1100px}
+  .kicker{display:inline-flex;align-items:center;gap:10px;font-size:clamp(10px,2vw,12px);font-weight:700;letter-spacing:.25em;
+    color:var(--aqua);text-transform:uppercase;margin-bottom:clamp(16px,3vw,28px)}
+  .kicker::before{content:'';width:clamp(24px,4vw,36px);height:1px;background:var(--aqua)}
+  .hero h1{font-size:clamp(28px,6vw,110px);font-weight:900;line-height:1.02;letter-spacing:-.01em}
+  .hero h1 .row{display:block;overflow:hidden}
+  .hero h1 .row span{display:inline-block;transform:translateY(110%);animation:rise .9s cubic-bezier(.2,.8,.2,1) forwards}
+  .hero h1 .row:nth-child(2) span{animation-delay:.12s}
+  .hero h1 .row:nth-child(3) span{animation-delay:.24s}
+  @keyframes rise{to{transform:translateY(0)}}
+  .hero h1 .outline{color:transparent;-webkit-text-stroke:1.5px rgba(233,238,241,.5)}
+  .hero h1 .aqua{color:var(--aqua)}
+  .hero p.lead{margin-top:clamp(20px,4vw,32px);max-width:520px;color:var(--mut);font-size:clamp(14px,2.5vw,17px);line-height:1.65}
+  .hero-cta{margin-top:clamp(24px,4vw,44px);display:flex;gap:clamp(8px,2vw,14px);flex-wrap:wrap}
+  .hero-cta .btn{padding:clamp(12px,2.5vw,16px) clamp(20px,4vw,32px);font-size:clamp(12px,2vw,14px)}
+  .hero-meta{position:absolute;bottom:clamp(20px,3vw,36px);left:clamp(16px,5vw,64px);right:clamp(16px,5vw,64px);z-index:2;
+    display:flex;justify-content:space-between;gap:clamp(12px,2vw,24px);border-top:1px solid var(--line);padding-top:clamp(16px,3vw,22px);
+    color:var(--mut);font-size:clamp(10px,1.5vw,12px);letter-spacing:.14em;text-transform:uppercase;font-weight:600;flex-wrap:wrap}
+  .hero-meta b{color:var(--txt)}
+  .scroll-hint{position:absolute;bottom:clamp(80px,10vw,110px);right:clamp(16px,5vw,64px);z-index:2;color:var(--mut);
+    display:flex;flex-direction:column;align-items:center;gap:8px;font-size:clamp(9px,1.5vw,11px);letter-spacing:.2em}
+  .scroll-hint i{animation:bob 1.8s ease-in-out infinite}
+  @keyframes bob{50%{transform:translateY(8px)}}
+  @media(max-width:640px){.scroll-hint{display:none}}
+
+  section{padding:clamp(60px,10vw,110px) clamp(16px,5vw,64px)}
+  .sec-head{display:flex;align-items:baseline;justify-content:space-between;gap:clamp(16px,3vw,24px);margin-bottom:clamp(32px,5vw,56px);flex-wrap:wrap}
+  .sec-head h2{font-size:clamp(20px,4vw,52px);font-weight:700;letter-spacing:-.01em}
+  .sec-head .num{font-family:'Unbounded';font-size:clamp(11px,1.5vw,13px);color:var(--aqua);letter-spacing:.2em;font-weight:500}
+  .reveal{opacity:0;transform:translateY(28px);transition:opacity .8s ease,transform .8s cubic-bezier(.2,.8,.2,1)}
+  .reveal.on{opacity:1;transform:none}
+
+  .price-list{border-top:1px solid var(--line)}
+  .price-row{display:grid;grid-template-columns:clamp(40px,6vw,64px) 1.4fr 1fr auto;gap:clamp(12px,2vw,20px);align-items:center;
+    padding:clamp(20px,3vw,30px) 8px;border-bottom:1px solid var(--line);position:relative;transition:.3s;cursor:pointer}
+  .price-row::before{content:'';position:absolute;left:0;top:0;bottom:0;width:3px;background:var(--aqua);
+    transform:scaleY(0);transition:transform .3s}
+  .price-row:hover{background:var(--bg2);padding-left:clamp(16px,3vw,24px)}
+  .price-row:hover::before{transform:scaleY(1)}
+  .price-row .idx{font-family:'Unbounded';font-size:clamp(10px,1.5vw,12px);color:var(--mut);font-weight:300}
+  .price-row h3{font-size:clamp(14px,2.2vw,24px);font-weight:500;transition:color .3s}
+  .price-row:hover h3{color:var(--aqua)}
+  .price-row .desc{color:var(--mut);font-size:clamp(12px,1.8vw,14px);line-height:1.55;max-width:420px}
+  .price-row .val{text-align:right;font-family:'Unbounded'}
+  .price-row .val .p{font-size:clamp(14px,2vw,22px);font-weight:700}
+  .price-row .val .t{font-size:clamp(9px,1.2vw,11px);color:var(--mut);letter-spacing:.1em;margin-top:4px}
+  @media(max-width:760px){.price-row{grid-template-columns:1fr auto;row-gap:8px}
+    .price-row .idx,.price-row .desc{display:none}}
+
+  .book{background:var(--bg2);border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .book-grid{display:grid;grid-template-columns:1.5fr 1fr;gap:clamp(16px,4vw,64px);align-items:start}
+  @media(max-width:900px){.book-grid{grid-template-columns:1fr}}
+  .field{margin-bottom:clamp(18px,3vw,26px)}
+  .field label{display:block;font-size:clamp(10px,1.5vw,12px);font-weight:700;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--mut);margin-bottom:clamp(8px,2vw,12px)}
+  .field input,.field textarea,.field select{width:100%;background:var(--panel);border:1px solid var(--line);
+    color:var(--txt);padding:clamp(12px,2vw,15px) clamp(12px,2vw,16px);border-radius:10px;font-size:clamp(13px,2vw,15px);transition:border-color .2s;outline:none}
+  .field input:focus,.field textarea:focus{border-color:var(--aqua)}
+  .field input::placeholder,.field textarea::placeholder{color:#4c565d}
+  .field input.err{border-color:var(--red)}
+  .frow{display:grid;grid-template-columns:1fr 1fr;gap:clamp(12px,2vw,16px)}
+  @media(max-width:520px){.frow{grid-template-columns:1fr}}
+
+  /* мультивыбор услуг */
+  .svc-pick{border:1px solid var(--line);border-radius:12px;overflow:hidden;background:var(--panel)}
+  .svc-opt{display:flex;justify-content:space-between;align-items:center;gap:clamp(8px,2vw,14px);padding:clamp(12px,2vw,15px) clamp(14px,2vw,18px);
+    border-bottom:1px solid var(--line);cursor:pointer;transition:.2s;position:relative}
+  .svc-opt:last-child{border-bottom:none}
+  .svc-opt:hover{background:rgba(255,255,255,.03)}
+  .svc-opt.sel{background:var(--aqua-dim)}
+  .svc-opt .n{font-weight:600;font-size:clamp(13px,2vw,15px)}
+  .svc-opt .d{font-size:clamp(10px,1.5vw,12px);color:var(--mut);margin-top:2px}
+  .svc-opt .pr{font-family:'Unbounded';font-size:clamp(12px,1.8vw,14px);font-weight:700;white-space:nowrap}
+  .svc-opt.sel .pr{color:var(--aqua)}
+  .svc-check{width:clamp(16px,2.5vw,20px);height:clamp(16px,2.5vw,20px);border:1.5px solid var(--line2);border-radius:6px;flex-shrink:0;
+    display:flex;align-items:center;justify-content:center;transition:.2s;color:transparent;font-size:clamp(10px,1.5vw,13px)}
+  .svc-opt.sel .svc-check{background:var(--aqua);border-color:var(--aqua);color:#04120e}
+  .svc-hint{margin-top:10px;font-size:clamp(10px,1.5vw,12px);color:var(--mut);display:flex;gap:6px;align-items:center}
+
+  .slots{display:flex;flex-wrap:wrap;gap:6px}
+  .slot{padding:clamp(7px,1.5vw,9px) clamp(10px,2vw,14px);border:1px solid var(--line);border-radius:100px;background:transparent;color:var(--txt);
+    font-size:clamp(11px,1.8vw,13px);font-weight:600;transition:.2s}
+  .slot:hover:not(:disabled){border-color:var(--aqua);color:var(--aqua)}
+  .slot.sel{background:var(--aqua);border-color:var(--aqua);color:#04120e}
+  .slot:disabled{opacity:.28;cursor:not-allowed;text-decoration:line-through}
+
+  .summary{position:sticky;top:100px;border:1px solid var(--line);border-radius:16px;padding:clamp(20px,3vw,30px);background:var(--panel)}
+  .summary h3{font-size:clamp(13px,2vw,15px);font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--mut);margin-bottom:clamp(16px,3vw,22px)}
+  .sum-row{display:flex;justify-content:space-between;gap:16px;padding:12px 0;border-bottom:1px dashed var(--line);
+    font-size:clamp(12px,1.8vw,14px)}
+  .sum-row .k{color:var(--mut)}
+  .sum-row .v{font-weight:600;text-align:right}
+  .sum-svc{display:flex;justify-content:space-between;font-size:clamp(12px,1.8vw,14px);padding:7px 0}
+  .sum-svc .rm{background:none;border:none;color:var(--mut);font-size:clamp(12px,1.8vw,14px);transition:color .2s}
+  .sum-svc .rm:hover{color:var(--red)}
+  .sum-total{display:flex;justify-content:space-between;align-items:baseline;padding-top:20px;margin-top:6px}
+  .sum-total .p{font-family:'Unbounded';font-size:clamp(24px,4vw,30px);font-weight:700;color:var(--aqua)}
+  .summary .btn{width:100%;justify-content:center;margin-top:clamp(16px,3vw,24px);padding:clamp(12px,2vw,16px)}
+  .sum-note{margin-top:14px;font-size:clamp(10px,1.5vw,12px);color:var(--mut);line-height:1.5;display:flex;gap:8px}
+  .sum-note i{color:var(--aqua);flex-shrink:0;margin-top:1px}
+  .or-divider{display:flex;align-items:center;gap:14px;margin:20px 0 0;color:var(--mut);font-size:clamp(9px,1.5vw,11px);
+    letter-spacing:.2em;text-transform:uppercase;font-weight:700}
+  .or-divider::before,.or-divider::after{content:'';flex:1;height:1px;background:var(--line)}
+
+  footer{padding:clamp(40px,6vw,60px) clamp(16px,5vw,64px) clamp(30px,5vw,40px);border-top:1px solid var(--line);
+    display:flex;justify-content:space-between;gap:clamp(20px,4vw,32px);flex-wrap:wrap;align-items:flex-end}
+  .foot-info{color:var(--mut);font-size:clamp(12px,2vw,14px);line-height:1.8}
+  .foot-info b{color:var(--txt)}
+  .owner-link{color:var(--mut);font-size:clamp(10px,1.5vw,12px);letter-spacing:.12em;text-transform:uppercase;display:inline-flex;
+    align-items:center;gap:8px;background:none;border:none;font-weight:700;transition:color .2s;margin-top:10px}
+  .owner-link:hover{color:var(--aqua)}
+
+  #toasts{position:fixed;bottom:24px;left:50%;transform:translateX(-50%);z-index:300;display:flex;flex-direction:column;gap:10px;align-items:center}
+  .toast{display:flex;align-items:center;gap:12px;background:#101a1e;border:1px solid var(--line2);
+    border-left:3px solid var(--aqua);padding:clamp(12px,2vw,14px) clamp(18px,3vw,22px);border-radius:12px;font-size:clamp(12px,1.8vw,14px);font-weight:600;
+    box-shadow:0 12px 40px rgba(0,0,0,.5);animation:tin .35s cubic-bezier(.2,.9,.3,1.2);max-width:90vw}
+  .toast.bad{border-left-color:var(--red)}
+  .toast i{color:var(--aqua);font-size:clamp(16px,2.5vw,18px)}
+  .toast.bad i{color:var(--red)}
+  .toast.out{animation:tout .3s forwards}
+  @keyframes tin{from{opacity:0;transform:translateY(20px) scale(.95)}}
+  @keyframes tout{to{opacity:0;transform:translateY(14px)}}
+
+  .overlay{position:fixed;inset:0;z-index:100;background:rgba(4,6,8,.78);backdrop-filter:blur(8px);
+    display:none;align-items:center;justify-content:center;padding:clamp(16px,3vw,20px)}
+  .overlay.open{display:flex;animation:fade .25s}
+  @keyframes fade{from{opacity:0}}
+  .modal{background:var(--panel);border:1px solid var(--line2);border-radius:20px;padding:clamp(24px,4vw,36px);width:100%;
+    max-width:420px;animation:mup .35s cubic-bezier(.2,.9,.3,1.1)}
+  @keyframes mup{from{opacity:0;transform:translateY(26px) scale(.97)}}
+  .modal h3{font-size:clamp(16px,2.5vw,20px);margin-bottom:8px}
+  .modal .sub{color:var(--mut);font-size:clamp(12px,1.8vw,14px);margin-bottom:clamp(18px,3vw,24px);line-height:1.5}
+  .modal .btn{width:100%;justify-content:center;padding:clamp(12px,2vw,14px);margin-top:6px}
+  .modal .hint{margin-top:16px;font-size:clamp(10px,1.5vw,12px);color:var(--mut);text-align:center}
+  .modal .hint code{color:var(--aqua);font-family:monospace}
+  .modal-x{position:absolute;top:18px;right:18px;background:none;border:none;color:var(--mut);font-size:20px}
+  .modal{position:relative}
+
+  /* ---------- ЧАТ ---------- */
+  .chat-modal{max-width:520px;display:flex;flex-direction:column;max-height:82vh;padding:0}
+  .chat-head{padding:clamp(18px,3vw,22px) clamp(20px,3vw,26px);border-bottom:1px solid var(--line);display:flex;align-items:center;gap:12px}
+  .chat-head .info b{display:block;font-size:clamp(14px,2vw,16px)}
+  .chat-head .info span{font-size:clamp(10px,1.5vw,12px);color:var(--mut)}
+  .chat-body{flex:1;overflow-y:auto;padding:clamp(18px,3vw,22px) clamp(20px,3vw,26px);display:flex;flex-direction:column;gap:12px;min-height:220px}
+  .msg{max-width:78%;padding:12px 16px;border-radius:14px;font-size:clamp(12px,1.8vw,14px);line-height:1.5;white-space:pre-wrap;word-break:break-word}
+  .msg small{display:block;font-size:10px;opacity:.55;margin-top:6px;letter-spacing:.05em}
+  .msg.client{align-self:flex-end;background:var(--aqua-dim);border:1px solid rgba(70,224,192,.3);border-bottom-right-radius:4px}
+  .msg.owner{align-self:flex-start;background:rgba(255,255,255,.05);border:1px solid var(--line);border-bottom-left-radius:4px}
+  .msg .sys{background:none;border:none;align-self:center;color:var(--mut);font-size:12px;text-align:center;padding:0}
+  .offer-card{align-self:stretch;background:rgba(255,209,102,.08);border:1px solid rgba(255,209,102,.35);
+    border-radius:14px;padding:16px 18px}
+  .offer-card .t{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--amber);margin-bottom:10px;display:flex;gap:8px;align-items:center}
+  .offer-card .row{display:flex;justify-content:space-between;font-size:14px;padding:4px 0}
+  .offer-card .row .k{color:var(--mut)}
+  .offer-card .btn{margin-top:12px;width:100%;justify-content:center}
+  .offer-card .accepted{color:var(--aqua);font-weight:700;font-size:13px;display:flex;gap:8px;align-items:center;margin-top:12px}
+  .chat-input{display:flex;gap:10px;padding:clamp(14px,2vw,16px) clamp(16px,2.5vw,20px);border-top:1px solid var(--line)}
+  .chat-input input{flex:1;background:var(--bg);border:1px solid var(--line);color:var(--txt);padding:clamp(11px,2vw,13px) clamp(12px,2vw,16px);
+    border-radius:100px;font-size:clamp(12px,1.8vw,14px);outline:none}
+  .chat-input input:focus{border-color:var(--aqua)}
+  .chat-input button{width:clamp(40px,6vw,46px);height:clamp(40px,6vw,46px);border-radius:50%;flex-shrink:0;border:none;background:var(--aqua);
+    color:#04120e;font-size:clamp(16px,2.5vw,18px);display:flex;align-items:center;justify-content:center;transition:.2s}
+  .chat-input button:hover{background:#6cf0d6}
+  .chat-empty{text-align:center;color:var(--mut);font-size:13px;padding:20px}
+
+  /* ---------- КАБИНЕТ ---------- */
+  #dash{position:fixed;inset:0;z-index:90;background:var(--bg);overflow-y:auto;display:none;animation:fade .3s}
+  #dash.open{display:block}
+  .dash-head{position:sticky;top:0;z-index:5;display:flex;align-items:center;justify-content:space-between;gap:16px;
+    padding:0 clamp(16px,3vw,40px);height:72px;border-bottom:1px solid var(--line);background:rgba(7,9,12,.85);backdrop-filter:blur(12px);flex-wrap:wrap}
+  .dash-head .t{display:flex;align-items:center;gap:12px;font-family:'Unbounded';font-weight:700;font-size:clamp(14px,2vw,16px)}
+  .dash-head .t i{color:var(--aqua)}
+  .dash-body{padding:clamp(28px,4vw,36px) clamp(16px,3vw,40px) clamp(60px,8vw,80px);max-width:1300px;margin:0 auto}
+  .stats{display:grid;grid-template-columns:repeat(auto-fit,minmax(160px,1fr));gap:14px;margin-bottom:28px}
+  .stat{border:1px solid var(--line);border-radius:14px;padding:clamp(18px,3vw,22px);background:var(--bg2)}
+  .stat .l{font-size:clamp(9px,1.2vw,11px);letter-spacing:.16em;text-transform:uppercase;color:var(--mut);font-weight:700;margin-bottom:10px;display:flex;gap:8px;align-items:center}
+  .stat .l i{color:var(--aqua);font-size:clamp(13px,2vw,15px)}
+  .stat .v{font-family:'Unbounded';font-size:clamp(18px,3vw,32px);font-weight:700}
+  .stat .v small{font-size:clamp(12px,1.8vw,14px);color:var(--mut);font-family:'Manrope';font-weight:500}
+  .dash-tabs{display:flex;gap:10px;margin-bottom:24px;flex-wrap:wrap}
+  .dash-tab{padding:clamp(10px,1.5vw,12px) clamp(20px,3vw,26px);border-radius:100px;border:1px solid var(--line);background:transparent;color:var(--mut);
+    font-size:clamp(12px,1.8vw,14px);font-weight:700;display:inline-flex;gap:8px;align-items:center;transition:.2s}
+  .dash-tab:hover{color:var(--txt)}
+  .dash-tab.on{background:var(--aqua);border-color:var(--aqua);color:#04120e}
+  .badge{background:var(--red);color:#fff;font-size:10px;font-weight:800;border-radius:100px;padding:2px 7px;min-width:18px;text-align:center}
+  .dash-tools{display:flex;gap:12px;margin-bottom:24px;flex-wrap:wrap;align-items:center}
+  .dash-tools input{flex:1;min-width:180px;background:var(--panel);border:1px solid var(--line);color:var(--txt);
+    padding:clamp(9px,1.5vw,11px) clamp(14px,2vw,16px);border-radius:100px;font-size:clamp(12px,1.8vw,14px);outline:none}
+  .dash-tools input:focus{border-color:var(--aqua)}
+  .chip{padding:clamp(7px,1.2vw,9px) clamp(14px,2vw,16px);border-radius:100px;border:1px solid var(--line);background:transparent;color:var(--mut);
+    font-size:clamp(11px,1.6vw,13px);font-weight:700;transition:.2s}
+  .chip:hover{color:var(--txt)}
+  .chip.on{background:var(--aqua);border-color:var(--aqua);color:#04120e}
+  .ord-table{width:100%;border-collapse:collapse}
+  .ord-table th{font-size:clamp(9px,1.2vw,11px);letter-spacing:.14em;text-transform:uppercase;color:var(--mut);text-align:left;
+    padding:clamp(10px,1.5vw,12px) clamp(12px,2vw,14px);border-bottom:1px solid var(--line2);font-weight:700;white-space:nowrap}
+  .ord-table td{padding:clamp(14px,2vw,16px) clamp(12px,2vw,14px);border-bottom:1px solid var(--line);font-size:clamp(12px,1.8vw,14px);vertical-align:middle}
+  .ord-table tr:hover td{background:var(--bg2)}
+  .ord-table .who b{display:block}
+  .ord-table .who span{color:var(--mut);font-size:clamp(10px,1.5vw,12px)}
+  .st{padding:5px 12px;border-radius:100px;font-size:clamp(9px,1.2vw,11px);font-weight:800;letter-spacing:.06em;text-transform:uppercase;white-space:nowrap}
+  .st.new{background:rgba(255,209,102,.14);color:var(--amber)}
+  .st.conf{background:var(--aqua-dim);color:var(--aqua)}
+  .st.done{background:rgba(140,160,170,.14);color:#9db4bf}
+  .st.cxl{background:rgba(255,107,94,.12);color:var(--red)}
+  .st-sel{background:var(--panel);border:1px solid var(--line);color:var(--txt);padding:7px 10px;border-radius:8px;font-size:clamp(11px,1.6vw,13px);outline:none;cursor:pointer}
+  .icon-btn{background:none;border:none;color:var(--mut);font-size:clamp(15px,2.2vw,17px);transition:color .2s;padding:6px}
+  .icon-btn:hover{color:var(--red)}
+  .empty-state{text-align:center;padding:clamp(50px,6vw,70px) 20px;color:var(--mut)}
+  .empty-state i{font-size:clamp(36px,5vw,44px);color:var(--aqua);opacity:.6;margin-bottom:16px;display:block}
+  .empty-state p{font-size:clamp(13px,2vw,15px)}
+  .ord-note{color:var(--mut);font-size:clamp(10px,1.5vw,12px);font-style:italic;max-width:220px;display:block;margin-top:2px}
+  .svc-tags{display:flex;flex-direction:column;gap:3px}
+  .svc-tags span{font-size:clamp(10px,1.5vw,12px)}
+  .svc-tags span::before{content:'— '}
+  /* список чатов в кабинете */
+  .chats-grid{display:grid;grid-template-columns:clamp(280px,35vw,340px) 1fr;gap:20px;align-items:start}
+  @media(max-width:900px){.chats-grid{grid-template-columns:1fr}}
+  .chat-list{border:1px solid var(--line);border-radius:14px;overflow:hidden;background:var(--bg2)}
+  .chat-item{padding:clamp(14px,2vw,16px) clamp(16px,2.5vw,18px);border-bottom:1px solid var(--line);cursor:pointer;transition:.2s;position:relative}
+  .chat-item:last-child{border-bottom:none}
+  .chat-item:hover{background:rgba(255,255,255,.03)}
+  .chat-item.on{background:var(--aqua-dim)}
+  .chat-item .top{display:flex;justify-content:space-between;gap:10px;align-items:center}
+  .chat-item .top b{font-size:clamp(12px,1.8vw,14px)}
+  .chat-item .last{color:var(--mut);font-size:clamp(10px,1.5vw,12px);margin-top:5px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+  .chat-item .unread{position:absolute;top:14px;right:16px}
+  .dot{width:9px;height:9px;border-radius:50%;background:var(--red);display:inline-block}
+  .owner-chat{border:1px solid var(--line);border-radius:14px;background:var(--bg2);display:flex;flex-direction:column;max-height:70vh}
+  .owner-chat .chat-body{min-height:300px}
+  .offer-form{display:grid;grid-template-columns:1fr 1fr 1fr;gap:10px;padding:14px 20px;border-top:1px solid var(--line)}
+  @media(max-width:640px){.offer-form{grid-template-columns:1fr}}
+  .offer-form input{background:var(--bg);border:1px solid var(--line);color:var(--txt);padding:clamp(9px,1.5vw,11px) clamp(12px,2vw,14px);
+    border-radius:10px;font-size:clamp(11px,1.6vw,13px);outline:none}
+  .offer-form input:focus{border-color:var(--amber)}
+  .offer-form .send-offer{grid-column:1/-1;background:var(--amber);border:none;color:#12100a;padding:clamp(10px,1.5vw,12px);
+    border-radius:10px;font-weight:800;font-size:clamp(11px,1.6vw,13px);letter-spacing:.05em;display:flex;gap:8px;align-items:center;justify-content:center}
+  .offer-form .send-offer:hover{background:#ffe08a}
+</style>
+</head>
+<body>
+
+<header>
+  <a class="logo" href="#top"><i class="ph-fill ph-car"></i>Car<em>Stables</em></a>
+  <nav>
+    <a href="#price">Услуги</a>
+    <a href="#book">Запись</a>
+    <a href="#contacts">Контакты</a>
+  </nav>
+  <div class="hdr-btns">
+    <button class="btn" onclick="openMyChats()"><i class="ph ph-chats-circle"></i>Мои переписки</button>
+    <button class="btn solid" onclick="scrollToBook()"><i class="ph ph-calendar-plus"></i>Записаться</button>
+  </div>
+</header>
+
+<!-- ============ HERO ============ -->
+<div class="hero" id="top">
+  <canvas id="waterCanvas"></canvas>
+  <div class="hero-inner">
+    <div class="kicker">Профессиональный автоуход · Конюшня для вашего авто</div>
+    <h1>
+      <span class="row"><span>ВАШЕ АВТО —</span></span>
+      <span class="row"><span class="outline">НАША</span></span>
+      <span class="row"><span class="aqua">ЗАБОТА.</span></span>
+    </h1>
+    <p class="lead">Мойка, химчистка, полировка и керамика. Собирайте свой комплекс из нескольких услуг, записывайтесь на удобный слот или обсудите индивидуальный заказ в чате с владельцем.</p>
+    <div class="hero-cta">
+      <button class="btn solid" onclick="scrollToBook()"><i class="ph ph-calendar-check"></i>Выбрать время</button>
+      <a class="btn" href="#price">Прайс-лист <i class="ph ph-arrow-down"></i></a>
+    </div>
+  </div>
+  <div class="scroll-hint"><i class="ph ph-caret-down"></i>листай</div>
+  <div class="hero-meta">
+    <span>Ежедневно · <b>10:00 — 22:00</b></span>
+    <span>5 постов · <b>без очередей</b></span>
+    <span>Комплексы · <b>скидка за объём</b></span>
+  </div>
+</div>
+
+<!-- ============ ПРАЙС ============ -->
+<section id="price">
+  <div class="sec-head reveal">
+    <h2>Услуги и цены</h2>
+    <span class="num">01 / ПРАЙС</span>
+  </div>
+  <div class="price-list reveal" id="priceList"></div>
+</section>
+
+<!-- ============ ЗАПИСЬ ============ -->
+<section class="book" id="book">
+  <div class="sec-head reveal">
+    <h2>Онлайн-запись</h2>
+    <span class="num">02 / ЗАПИСЬ</span>
+  </div>
+  <div class="book-grid reveal">
+    <form id="bookForm" novalidate>
+      <div class="field">
+        <label>Услуги — можно выбрать несколько</label>
+        <div class="svc-pick" id="svcPick"></div>
+        <div class="svc-hint"><i class="ph ph-info"></i>За комплекс из 3+ услуг — скидка 10% на весь чек</div>
+      </div>
+      <div class="frow">
+        <div class="field">
+          <label>Дата</label>
+          <input type="date" id="fDate">
+        </div>
+        <div class="field">
+          <label>Ваше имя</label>
+          <input type="text" id="fName" placeholder="Иван">
+        </div>
+      </div>
+      <div class="field">
+        <label>Время</label>
+        <div class="slots" id="slots"><span style="color:var(--mut);font-size:14px">Сначала выберите дату</span></div>
+      </div>
+      <div class="frow">
+        <div class="field">
+          <label>Телефон</label>
+          <input type="tel" id="fPhone" placeholder="+7 (___) ___-__-__">
+        </div>
+        <div class="field">
+          <label>Авто</label>
+          <input type="text" id="fCar" placeholder="BMW X5, чёрный">
+        </div>
+      </div>
+      <div class="field">
+        <label>Комментарий (необязательно)</label>
+        <textarea id="fNote" rows="2" placeholder="Сильные загрязнения, собачья шерсть в салоне…"></textarea>
+      </div>
+    </form>
+    <aside class="summary">
+      <h3><i class="ph ph-receipt" style="color:var(--aqua)"></i> Ваша заявка</h3>
+      <div id="sumSvcList"></div>
+      <div class="sum-row"><span class="k">Общая длительность</span><span class="v" id="sumDur">—</span></div>
+      <div class="sum-row"><span class="k">Дата и время</span><span class="v" id="sumWhen">—</span></div>
+      <div class="sum-row"><span class="k">Клиент</span><span class="v" id="sumWho">—</span></div>
+      <div class="sum-total">
+        <span style="color:var(--mut);font-size:13px" id="sumTotalLabel">Итого</span>
+        <span class="p" id="sumPrice">0 ₽</span>
+      </div>
+      <button type="button" class="btn solid" id="submitBtn"><i class="ph ph-paper-plane-tilt"></i>Отправить заявку</button>
+      <div class="or-divider">или</div>
+      <button type="button" class="btn amber" style="margin-top:16px" onclick="openCustomRequest()">
+        <i class="ph ph-chats-circle"></i>Обсудить индивидуальный заказ
+      </button>
+      <div class="sum-note"><i class="ph ph-shield-check"></i>Оплата на месте. Менеджер перезвонит в течение 15 минут и подтвердит запись.</div>
+    </aside>
+  </div>
+</section>
+
+<!-- ============ ФУТЕР ============ -->
+<footer id="contacts">
+  <div class="foot-info">
+    <b>Car Stables — профессиональный автоуход</b><br>
+    СПб, Обводный канал 199 · <b>ежедневно 10:00–22:00</b><br>
+    +7 (812) 555-01-77 · hello@carstables.ru
+  </div>
+  <div style="text-align:right">
+    <div class="foot-info" style="font-size:12px">© 2025 Car Stables. Сделано с любовью к авто.</div>
+    <button class="owner-link" onclick="openMyChats()"><i class="ph ph-chats-circle"></i>Мои переписки</button>
+    <br>
+    <button class="owner-link" onclick="openLogin()"><i class="ph ph-lock-key"></i>Личный кабинет владельца</button>
+  </div>
+</footer>
+
+<!-- ============ ВХОД ВЛАДЕЛЬЦА ============ -->
+<div class="overlay" id="loginOverlay">
+  <div class="modal">
+    <button class="modal-x" onclick="closeLogin()"><i class="ph ph-x"></i></button>
+    <h3>Кабинет владельца</h3>
+    <p class="sub">Введите пароль доступа к панели заявок.</p>
+    <div class="field" style="margin-bottom:12px">
+      <input type="password" id="pwdInput" placeholder="Пароль" onkeydown="if(event.key==='Enter')tryLogin()">
+    </div>
+    <button class="btn solid" onclick="tryLogin()"><i class="ph ph-sign-in"></i>Войти</button>
+    <p class="hint">Демо-пароль: <code>car2024</code></p>
+  </div>
+</div>
+
+<!-- ============ ИНДИВИДУАЛЬНЫЙ ЗАКАЗ (создание чата) ============ -->
+<div class="overlay" id="customOverlay">
+  <div class="modal">
+    <button class="modal-x" onclick="closeModal('customOverlay')"><i class="ph ph-x"></i></button>
+    <h3>Индивидуальный заказ</h3>
+    <p class="sub">Опишите, что нужно. Владелец ответит в чате, обсудим цену и время — потом запишетесь прямо из переписки.</p>
+    <div class="field"><input type="text" id="cName" placeholder="Ваше имя"></div>
+    <div class="field"><input type="tel" id="cPhone" placeholder="Телефон — по нему откроется чат"></div>
+    <div class="field"><input type="text" id="cCar" placeholder="Авто (BMW X5, чёрный)"></div>
+    <div class="field"><textarea id="cText" rows="3" placeholder="Например: керамика + химчистка, есть царапины на двери, бюджет до 20 000 ₽"></textarea></div>
+    <button class="btn solid" onclick="createChat()"><i class="ph ph-paper-plane-tilt"></i>Отправить и открыть чат</button>
+  </div>
+</div>
+
+<!-- ============ ЧАТ (клиент и владелец) ============ -->
+<div class="overlay" id="chatOverlay">
+  <div class="modal chat-modal">
+    <button class="modal-x" onclick="closeModal('chatOverlay')"><i class="ph ph-x"></i></button>
+    <div class="chat-head">
+      <i class="ph-fill ph-chats-circle" style="color:var(--aqua);font-size:24px"></i>
+      <div class="info"><b id="chatTitle">Чат</b><span id="chatSub">—</span></div>
+    </div>
+    <div class="chat-body" id="chatBody"></div>
+    <div class="chat-input" id="chatInputWrap">
+      <input type="text" id="chatInput" placeholder="Сообщение…" onkeydown="if(event.key==='Enter')sendMsg()">
+      <button onclick="sendMsg()"><i class="ph-fill ph-paper-plane-right"></i></button>
+    </div>
+  </div>
+</div>
+
+<!-- ============ МОИ ПЕРЕПИСКИ (клиент) ============ -->
+<div class="overlay" id="myChatsOverlay">
+  <div class="modal">
+    <button class="modal-x" onclick="closeModal('myChatsOverlay')"><i class="ph ph-x"></i></button>
+    <h3>Мои переписки</h3>
+    <p class="sub">Введите телефон, который указывали при обращении.</p>
+    <div class="field" style="margin-bottom:12px">
+      <input type="tel" id="myPhone" placeholder="+7 (___) ___-__-__" onkeydown="if(event.key==='Enter')findMyChats()">
+    </div>
+    <button class="btn solid" onclick="findMyChats()"><i class="ph ph-magnifying-glass"></i>Найти чаты</button>
+    <div id="myChatsList" style="margin-top:18px"></div>
+  </div>
+</div>
+
+<!-- ============ ПАНЕЛЬ ВЛАДЕЛЬЦА ============ -->
+<div id="dash">
+  <div class="dash-head">
+    <div class="t"><i class="ph-fill ph-gauge"></i>Car Stables · Панель управления</div>
+    <div class="hdr-btns">
+      <button class="btn" onclick="closeDash()"><i class="ph ph-arrow-u-up-left"></i>На сайт</button>
+      <button class="btn" onclick="logout()"><i class="ph ph-sign-out"></i>Выйти</button>
+    </div>
+  </div>
+  <div class="dash-body">
+    <div class="stats">
+      <div class="stat"><div class="l"><i class="ph ph-inbox"></i>Новые заявки</div><div class="v" id="stNew">0</div></div>
+      <div class="stat"><div class="l"><i class="ph ph-calendar-check"></i>Записей сегодня</div><div class="v" id="stToday">0</div></div>
+      <div class="stat"><div class="l"><i class="ph ph-currency-rub"></i>Выручка (подтв., 7 дней)</div><div class="v" id="stRev">0 <small>₽</small></div></div>
+      <div class="stat"><div class="l"><i class="ph ph-chats-circle"></i>Открытых чатов</div><div class="v" id="stChats">0</div></div>
+    </div>
+    <div class="dash-tabs">
+      <button class="dash-tab on" id="tabOrders" onclick="switchTab('orders')"><i class="ph ph-list-checks"></i>Заявки</button>
+      <button class="dash-tab" id="tabServices" onclick="switchTab('services')"><i class="ph ph-tag"></i>Услуги и цены</button>
+      <button class="dash-tab" id="tabChats" onclick="switchTab('chats')"><i class="ph ph-chats-circle"></i>Чаты <span class="badge" id="chatBadge" style="display:none">0</span></button>
+    </div>
+
+    <!-- вкладка УСЛУГИ И ЦЕНЫ -->
+    <div id="paneServices" style="display:none">
+      <div class="dash-tools">
+        <div style="flex:1;min-width:220px">
+          <h2 style="margin:0 0 6px;font-size:22px">Услуги и цены</h2>
+          <div style="color:var(--mut);font-size:13px">Изменения сразу появляются на сайте и используются в новых заявках.</div>
+        </div>
+        <button class="btn solid" onclick="openServiceEditor()"><i class="ph ph-plus"></i>Добавить услугу</button>
+      </div>
+      <div id="serviceAdminList"></div>
+    </div>
+
+    <!-- вкладка ЗАЯВКИ -->
+    <div id="paneOrders">
+      <div class="dash-tools">
+        <input type="text" id="dashSearch" placeholder="Поиск: имя, телефон, авто…" oninput="renderDash()">
+        <button class="chip on" data-f="all" onclick="setFilter(this)">Все</button>
+        <button class="chip" data-f="new" onclick="setFilter(this)">Новые</button>
+        <button class="chip" data-f="conf" onclick="setFilter(this)">Подтверждены</button>
+        <button class="chip" data-f="done" onclick="setFilter(this)">Выполнены</button>
+        <button class="chip" data-f="cxl" onclick="setFilter(this)">Отменены</button>
+      </div>
+      <table class="ord-table" id="ordTable">
+        <thead><tr>
+          <th>Дата / время</th><th>Клиент и авто</th><th>Услуги</th><th>Сумма</th>
+          <th>Статус</th><th>Изменить</th><th></th>
+        </tr></thead>
+        <tbody id="dashRows"></tbody>
+      </table>
+      <div id="dashEmpty" class="empty-state" style="display:none">
+        <i class="ph ph-magnifying-glass"></i>
+        <p>Заявок по этому фильтру пока нет. Они появятся, как только клиенты отправят форму на сайте.</p>
+      </div>
+    </div>
+
+    <!-- вкладка ЧАТЫ -->
+    <div id="paneChats" style="display:none">
+      <div class="chats-grid">
+        <div class="chat-list" id="ownerChatList"></div>
+        <div id="ownerChatArea">
+          <div class="empty-state"><i class="ph ph-chats-circle"></i><p>Выберите диалог слева</p></div>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div id="toasts"></div>
+
+<script>
+/* ================= ДАННЫЕ ================= */
+const DEFAULT_SERVICES = [
+  {id:'express', name:'Экспресс-мойка кузова', desc:'Кузов + диски, пена, сушка без контакта', price:700,  min:40},
+  {id:'std',     name:'Комплекс «Стандарт»',    desc:'Кузов, пороги, коврики, полировка стёкол', price:1500, min:90},
+  {id:'detail',  name:'Детейлинг-мойка',        desc:'Ручная мойка, дегрязация, воск, салон', price:2500, min:150},
+  {id:'int',     name:'Химчистка салона',       desc:'Экстрактор, пар, кондиционер для кожи', price:6000, min:240},
+  {id:'polish',  name:'Полировка кузова',       desc:'Удаление рисок и голограмм, 2 этапа', price:9000, min:300},
+  {id:'ceramic', name:'Керамическое покрытие',  desc:'2 слоя, гидрофоб, гарантия 12 мес', price:15000, min:480},
+];
+let SERVICES = DEFAULT_SERVICES.map(s=>({...s}));
+const HOURS = [10,11,12,13,14,15,16,17,18,19,20];
+const OWNER_PWD = 'car2024';
+
+const fmtRub = n => n.toLocaleString('ru-RU') + ' ₽';
+const fmtDur = m => m >= 60 ? (Math.floor(m/60)+' ч'+(m%60?' '+m%60+' мин':'')) : m+' мин';
+const pad = n => String(n).padStart(2,'0');
+const todayISO = () => { const d=new Date(); return d.getFullYear()+'-'+pad(d.getMonth()+1)+'-'+pad(d.getDate()); };
+const nowTs = () => new Date().toLocaleTimeString('ru-RU',{hour:'2-digit',minute:'2-digit'});
+
+/* ---------- Слой данных: API на сервере, fallback на localStorage ---------- */
+const LS_KEY = 'carstables_state_v2';
+let state = { orders: [], chats: [] };
+let realtimeSource = null;
+let realtimeConnected = false;
+let realtimeFallbackTimer = null;
+let stateRequest = null;
+let persistInFlight = false;
+let persistQueued = false;
+
+async function loadState(){
+  if(stateRequest) return stateRequest;
+  stateRequest = (async ()=>{
+    try{
+      const r = await fetch('/api/state', {cache:'no-store'});
+      if(r.ok){ state = await r.json(); if(Array.isArray(state.services) && state.services.length){ SERVICES=state.services.map(s=>({...s})); } else { SERVICES=DEFAULT_SERVICES.map(s=>({...s})); state.services=SERVICES.map(s=>({...s})); } try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){} return; }
+    }catch(e){}
+    try { state = JSON.parse(localStorage.getItem(LS_KEY)) || state; } catch(e){}
+  })();
+  try { await stateRequest; } finally { stateRequest = null; }
+}
+function applyRealtimeState(data){
+  if(!data || !Array.isArray(data.orders) || !Array.isArray(data.chats)) return;
+  const oldMessageCount = state.chats.reduce((n,c)=>n+(c.messages?.length||0),0);
+  state = data;
+  if(Array.isArray(state.services) && state.services.length){ SERVICES=state.services.map(s=>({...s})); } else { SERVICES=DEFAULT_SERVICES.map(s=>({...s})); state.services=SERVICES.map(s=>({...s})); } renderServiceCatalog();
+  try{ localStorage.setItem(LS_KEY, JSON.stringify(state)); }catch(e){}
+  renderSlots(); renderSummary();
+  if(document.getElementById('dash')?.classList.contains('open')){
+    renderDash(); if(dashTab==='chats') renderOwnerChats();
+    if(activeChatId && chatRole==='owner' && document.getElementById('ownerChatBody')) renderOwnerChat();
+  }
+  if(document.getElementById('chatOverlay')?.classList.contains('open')){
+    const newMessageCount = state.chats.reduce((n,c)=>n+(c.messages?.length||0),0);
+    renderChat();
+    if(newMessageCount > oldMessageCount && chatRole==='client') toast('Новое сообщение от владельца');
+  }
+}
+function stopRealtimeFallback(){
+  if(realtimeFallbackTimer){ clearInterval(realtimeFallbackTimer); realtimeFallbackTimer=null; }
+}
+function startRealtimeFallback(){
+  if(realtimeFallbackTimer) return;
+  realtimeFallbackTimer=setInterval(async()=>{
+    if(realtimeConnected) return;
+    try{
+      const r=await fetch('/api/state',{cache:'no-store'});
+      if(r.ok) applyRealtimeState(await r.json());
+    }catch(e){}
+  },1500);
+}
+function connectRealtime(){
+  if(!window.EventSource){ startRealtimeFallback(); return; }
+  if(realtimeSource) realtimeSource.close();
+  realtimeConnected=false;
+  startRealtimeFallback();
+  realtimeSource = new EventSource('/api/events');
+  realtimeSource.onopen=()=>{ realtimeConnected=true; stopRealtimeFallback(); };
+  realtimeSource.addEventListener('state', e=>{ try{ applyRealtimeState(JSON.parse(e.data)); }catch(err){} });
+  realtimeSource.onerror = ()=>{
+    realtimeConnected=false;
+    if(realtimeSource){ realtimeSource.close(); realtimeSource=null; }
+    startRealtimeFallback();
+    setTimeout(()=>{ if(!realtimeConnected) connectRealtime(); },2500);
+  };
+}
+async function persist(){
+  try { localStorage.setItem(LS_KEY, JSON.stringify(state)); } catch(e){}
+  if(persistInFlight){ persistQueued=true; return; }
+  persistInFlight=true;
+  try{
+    do{
+      persistQueued=false;
+      const snapshot=JSON.parse(JSON.stringify(state));
+      try{
+        const r=await fetch('/api/state',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(snapshot)});
+        if(!r.ok) throw new Error('state save failed');
+      }catch(e){}
+    }while(persistQueued);
+  }finally{ persistInFlight=false; }
+}
+
+let selServices = new Set(['std']), selSlot = null, dashFilter = 'all', dashTab = 'orders';
+let activeChatId = null, chatRole = 'client'; // 'client' | 'owner'
+let lastSeenChats = new Set(); // прочитанные владельцем чаты
+
+/* ================= ТОСТЫ ================= */
+function toast(msg, bad=false){
+  const el = document.createElement('div');
+  el.className = 'toast' + (bad?' bad':'');
+  el.innerHTML = `<i class="ph ${bad?'ph-warning-circle':'ph-check-circle'}"></i>${msg}`;
+  document.getElementById('toasts').appendChild(el);
+  setTimeout(()=>{ el.classList.add('out'); setTimeout(()=>el.remove(), 300); }, 3400);
+}
+
+/* ================= ПРАЙС ================= */
+function toggleService(id){
+  if(!SERVICES.some(s=>s.id===id)) return;
+  if(selServices.has(id)){
+    if(selServices.size===1) return;
+    selServices.delete(id);
+  }else{
+    selServices.add(id);
+  }
+  document.querySelectorAll('.svc-opt').forEach(e=>{
+    e.classList.toggle('sel',selServices.has(e.dataset.id));
+  });
+  renderSummary();
+}
+
+function renderServiceCatalog(){
+  const priceList = document.getElementById('priceList');
+  const svcPick = document.getElementById('svcPick');
+  if(!priceList || !svcPick) return;
+  priceList.innerHTML = '';
+  svcPick.innerHTML = '';
+  SERVICES.forEach((s,i)=>{
+    const row=document.createElement('div');
+    row.className='price-row';
+    row.innerHTML=`<span class="idx">${pad(i+1)}</span>
+      <div><h3>${s.name}</h3></div>
+      <div class="desc">${s.desc}</div>
+      <div class="val"><div class="p">${fmtRub(s.price)}</div><div class="t">≈ ${fmtDur(s.min)}</div></div>`;
+    row.onclick=()=>{toggleService(s.id); scrollToBook();};
+    priceList.appendChild(row);
+  });
+  SERVICES.forEach(s=>{
+    const el=document.createElement('div');
+    el.className='svc-opt'; el.dataset.id=s.id;
+    el.innerHTML=`<div class="svc-check"><i class="ph-bold ph-check"></i></div>
+      <div style="flex:1"><div class="n">${s.name}</div><div class="d">${s.desc} · ${fmtDur(s.min)}</div></div>
+      <div class="pr">${fmtRub(s.price)}</div>`;
+    el.onclick=()=>toggleService(s.id);
+    svcPick.appendChild(el);
+  });
+  selServices=new Set([...selServices].filter(id=>SERVICES.some(s=>s.id===id)));
+  if(!selServices.size && SERVICES[0]) selServices.add(SERVICES[0].id);
+  document.querySelectorAll('.svc-opt').forEach(e=>e.classList.toggle('sel',selServices.has(e.dataset.id)));
+}
+const fDate = document.getElementById('fDate');
+fDate.min = todayISO(); fDate.value = todayISO();
+fDate.onchange = ()=>{ selSlot = null; renderSlots(); renderSummary(); };
+
+function activeOrders(){ return state.orders.filter(o=>o.status!=='cxl'); }
+
+function renderSlots(){
+  const box = document.getElementById('slots');
+  const date = fDate.value;
+  if(!date){ box.innerHTML = '<span style="color:var(--mut);font-size:14px">Сначала выберите дату</span>'; return; }
+  const taken = new Set(activeOrders().filter(o=>o.date===date).map(o=>o.time));
+  const now = new Date(); const isToday = date === todayISO();
+  box.innerHTML = '';
+  HOURS.forEach(h=>{
+    const t = pad(h)+':00';
+    const b = document.createElement('button');
+    b.type='button'; b.className='slot'; b.textContent = t;
+    const past = isToday && (h <= now.getHours());
+    if(taken.has(t) || past){ b.disabled = true; if(taken.has(t)) b.title = 'Слот занят'; }
+    else b.onclick = ()=>{ selSlot = t; document.querySelectorAll('.slot').forEach(x=>x.classList.remove('sel')); b.classList.add('sel'); renderSummary(); };
+    box.appendChild(b);
+  });
+}
+
+function pickedServices(){
+  return SERVICES.filter(s=>selServices.has(s.id));
+}
+function pickedSum(){
+  return pickedServices().reduce((sum,s)=>sum + Number(s.price || 0), 0);
+}
+function pickedMin(){
+  return pickedServices().reduce((sum,s)=>sum + Number(s.min || 0), 0);
+}
+
+function renderSummary(){
+  const list = document.getElementById('sumSvcList');
+  list.innerHTML = '';
+  pickedServices().forEach(s=>{
+    const d = document.createElement('div'); d.className='sum-svc';
+    d.innerHTML = `<span>${s.name}</span><span style="display:flex;gap:10px;align-items:center">
+      <b>${fmtRub(s.price)}</b><button type="button" class="rm" title="Убрать"><i class="ph ph-x"></i></button></span>`;
+    d.querySelector('.rm').onclick = ()=> toggleService(s.id);
+    list.appendChild(d);
+  });
+  const disc = pickedServices().length >= 3;
+  document.getElementById('sumDur').textContent = '≈ ' + fmtDur(pickedMin());
+  document.getElementById('sumWhen').textContent = selSlot
+    ? (fDate.value ? fDate.value.split('-').reverse().join('.') : '') + ' · ' + selSlot
+    : 'не выбрано';
+  const name = document.getElementById('fName').value.trim();
+  document.getElementById('sumWho').textContent = name || '—';
+  document.getElementById('sumPrice').textContent = fmtRub(pickedSum());
+  document.getElementById('sumTotalLabel').textContent = disc ? 'Итого (−10%)' : 'Итого';
+}
+['fName','fPhone','fCar'].forEach(id=>{
+  document.getElementById(id).addEventListener('input', e=>{
+    if(id==='fName') renderSummary();
+    e.target.classList.remove('err');
+  });
+});
+
+document.getElementById('submitBtn').onclick = ()=>{
+  const name = document.getElementById('fName').value.trim();
+  const phone = document.getElementById('fPhone').value.replace(/\D/g,'');
+  const car = document.getElementById('fCar').value.trim();
+  const note = document.getElementById('fNote').value.trim();
+  let ok = true;
+  const mark = (id,cond)=>{ const el=document.getElementById(id); el.classList.toggle('err',!cond); if(!cond) ok=false; };
+  mark('fName', name.length >= 2);
+  mark('fPhone', phone.length >= 10);
+  mark('fCar', car.length >= 2);
+  if(!fDate.value){ toast('Выберите дату визита', true); ok=false; }
+  if(!selSlot){ toast('Выберите свободное время', true); ok=false; }
+  if(!ok){ toast('Проверьте выделенные поля', true); return; }
+  if(activeOrders().some(o=>o.date===fDate.value && o.time===selSlot)){
+    toast('Увы, этот слот только что заняли. Выберите другой', true);
+    selSlot=null; renderSlots(); return;
+  }
+  const svc = pickedServices();
+  state.orders.push({
+    id: Date.now(), date: fDate.value, time: selSlot,
+    name, phone: document.getElementById('fPhone').value, car, note,
+    services: svc.map(s=>({id:s.id, name:s.name, price:s.price})),
+    total: pickedSum(), duration: pickedMin(),
+    status: 'new', created: new Date().toISOString()
+  });
+  persist();
+  document.getElementById('bookForm').reset();
+  fDate.value = todayISO(); selSlot = null;
+  renderSlots(); renderSummary();
+  toast(`Заявка на ${svc.length} услуг(и) отправлена! Ждём звонка-подтверждения`);
+};
+function scrollToBook(){ document.getElementById('book').scrollIntoView({behavior:'smooth'}); }
+
+/* ================= ИНДИВИДУАЛЬНЫЙ ЗАКАЗ + ЧАТ ================= */
+function openModal(id){ document.getElementById(id).classList.add('open'); }
+function closeModal(id){ document.getElementById(id).classList.remove('open'); }
+
+function openCustomRequest(){ openModal('customOverlay'); setTimeout(()=>document.getElementById('cName').focus(),100); }
+
+function normPhone(p){ return p.replace(/\D/g,'').slice(-10); }
+
+function createChat(){
+  const name = document.getElementById('cName').value.trim();
+  const phone = document.getElementById('cPhone').value.trim();
+  const car = document.getElementById('cCar').value.trim();
+  const text = document.getElementById('cText').value.trim();
+  if(name.length<2 || normPhone(phone).length<10 || text.length<5){
+    toast('Заполните имя, телефон (10+ цифр) и описание', true); return;
+  }
+  const chat = {
+    id: Date.now(), name, phone, car,
+    messages: [{from:'client', text, ts: nowTs()}],
+    status: 'open', offer: null, created: new Date().toISOString()
+  };
+  state.chats.push(chat);
+  persist();
+  ['cName','cPhone','cCar','cText'].forEach(id=>document.getElementById(id).value='');
+  closeModal('customOverlay');
+  openChat(chat.id, 'client');
+  toast('Запрос отправлен владельцу — отвечаем обычно в течение часа');
+}
+
+function openChat(id, role){
+  activeChatId = id; chatRole = role;
+  closeModal('customOverlay'); closeModal('myChatsOverlay');
+  openModal('chatOverlay');
+  document.getElementById('chatInputWrap').style.display = 'flex';
+  if(role==='owner') lastSeenChats.add(id);
+  renderChat();
+}
+
+function renderChat(){
+  const chat = state.chats.find(c=>c.id===activeChatId);
+  if(!chat) return;
+  document.getElementById('chatTitle').textContent = chatRole==='owner' ? chat.name : 'Чат с владельцем';
+  document.getElementById('chatSub').textContent = chatRole==='owner' ? `${chat.phone} · ${chat.car||'—'}` : (chat.car||'');
+  const body = document.getElementById('chatBody');
+  body.innerHTML = '';
+  if(!chat.messages.length) body.innerHTML = '<div class="chat-empty">Сообщений пока нет</div>';
+  chat.messages.forEach(m=>{
+    if(m.offer){
+      const card = document.createElement('div'); card.className='offer-card';
+      card.innerHTML = `<div class="t"><i class="ph ph-tag"></i>Предложение владельца</div>
+        <div class="row"><span class="k">Услуги</span><span>${m.offer.text||'по договорённости'}</span></div>
+        <div class="row"><span class="k">Цена</span><b>${fmtRub(m.offer.price)}</b></div>
+        <div class="row"><span class="k">Когда</span><span>${m.offer.date ? m.offer.date.split('-').reverse().join('.') : '—'} ${m.offer.time||''}</span></div>`;
+      if(m.offer.accepted){
+        card.innerHTML += `<div class="accepted"><i class="ph-fill ph-check-circle"></i>Вы записались по этому предложению</div>`;
+      } else if(chatRole==='client' && chat.status==='open'){
+        const b = document.createElement('button');
+        b.className='btn solid'; b.innerHTML = '<i class="ph ph-calendar-check"></i>Записаться на это время';
+        b.onclick = ()=> acceptOffer(chat, m.offer);
+        card.appendChild(b);
+      }
+      body.appendChild(card);
+    } else {
+      const el = document.createElement('div');
+      el.className = 'msg ' + (m.from==='client' ? 'client' : 'owner');
+      el.textContent = m.text;
+      el.appendChild(Object.assign(document.createElement('small'),{textContent:m.ts}));
+      body.appendChild(el);
+    }
+  });
+  body.scrollTop = body.scrollHeight;
+}
+
+function sendMsg(){
+  const inputId = chatRole==='owner' && document.getElementById('ownerChatInput') ? 'ownerChatInput' : 'chatInput';
+  const inp = document.getElementById(inputId);
+  const text = inp.value.trim();
+  if(!text || !activeChatId) return;
+  const chat = state.chats.find(c=>String(c.id)===String(activeChatId));
+  if(!chat) return;
+  chat.messages.push({from: chatRole, text, ts: nowTs()});
+  inp.value=''; renderChat();
+  if(chatRole==='owner') renderOwnerChat();
+  renderOwnerChats(); persist();
+}
+function acceptOffer(chat, offer){
+  if(activeOrders().some(o=>o.date===offer.date && o.time===offer.time)){
+    toast('Это время уже занято — напишите владельцу в чате', true); return;
+  }
+  state.orders.push({
+    id: Date.now(), date: offer.date, time: offer.time,
+    name: chat.name, phone: chat.phone, car: chat.car, note: 'Из чата: ' + (offer.text||'индивидуальный заказ'),
+    services: [{id:'custom', name: offer.text || 'Индивидуальный заказ', price: offer.price}],
+    total: offer.price, duration: 0,
+    status: 'conf', created: new Date().toISOString(), fromChat: chat.id
+  });
+  chat.status = 'booked';
+  offer.accepted = true;
+  chat.messages.push({from:'system', text:'', ts:'', offer});
+  persist(); renderChat();
+  toast('Запись подтверждена! Ждём вас — ' + offer.date.split('-').reverse().join('.') + ' ' + offer.time);
+}
+
+/* клиент: найти свои чаты по телефону */
+function openMyChats(){ openModal('myChatsOverlay'); setTimeout(()=>document.getElementById('myPhone').focus(),100); }
+function findMyChats(){
+  const p = normPhone(document.getElementById('myPhone').value);
+  const list = document.getElementById('myChatsList');
+  list.innerHTML = '';
+  const mine = state.chats.filter(c=>normPhone(c.phone)===p);
+  if(!mine.length){ list.innerHTML = '<p style="color:var(--mut);font-size:14px;text-align:center">Чатов по этому номеру нет</p>'; return; }
+  mine.forEach(c=>{
+    const el = document.createElement('div');
+    el.className='svc-opt'; el.style.borderRadius='10px';
+    el.innerHTML = `<div><div class="n">${c.car||c.name}</div>
+      <div class="d">${c.messages[c.messages.length-1]?.text.slice(0,60)||''}</div></div>
+      <span class="st ${c.status==='booked'?'conf':'new'}">${c.status==='booked'?'Записан':'Открыт'}</span>`;
+    el.onclick = ()=> openChat(c.id, 'client');
+    list.appendChild(el);
+  });
+}
+
+/* ================= ВХОД ВЛАДЕЛЬЦА ================= */
+function openLogin(){ openModal('loginOverlay'); setTimeout(()=>document.getElementById('pwdInput').focus(),100); }
+function closeLogin(){ closeModal('loginOverlay'); document.getElementById('pwdInput').value=''; }
+function tryLogin(){
+  if(document.getElementById('pwdInput').value === OWNER_PWD){
+    closeLogin(); document.getElementById('dash').classList.add('open');
+    document.body.style.overflow='hidden';
+    switchTab(dashTab); renderDash(); renderOwnerChats();
+  } else toast('Неверный пароль', true);
+}
+function logout(){ document.getElementById('dash').classList.remove('open'); document.body.style.overflow=''; closeModal('chatOverlay'); }
+function closeDash(){ logout(); }
+
+function switchTab(tab){
+  dashTab = tab;
+  ['orders','services','chats'].forEach(t=>{
+    document.getElementById('tab'+t.charAt(0).toUpperCase()+t.slice(1)).classList.toggle('on',tab===t);
+    document.getElementById('pane'+t.charAt(0).toUpperCase()+t.slice(1)).style.display=tab===t?'block':'none';
+  });
+  if(tab==='chats') renderOwnerChats();
+  if(tab==='services') renderServiceAdmin();
+}
+
+function renderServiceAdmin(){
+  const box=document.getElementById('serviceAdminList');
+  if(!box) return;
+  box.innerHTML='';
+  if(!SERVICES.length){ box.innerHTML='<div class="empty-state"><i class="ph ph-tag"></i><p>Услуг пока нет. Добавьте первую услугу.</p></div>'; return; }
+  SERVICES.forEach((s,i)=>{
+    const el=document.createElement('div');
+    el.style.cssText='display:grid;grid-template-columns:1fr 150px 120px auto;gap:16px;align-items:center;padding:18px 0;border-bottom:1px solid var(--line)';
+    el.innerHTML=`<div><b style="font-size:15px">${s.name}</b><div style="font-size:12px;color:var(--mut);margin-top:5px">${s.desc} · ${fmtDur(s.min)}</div></div>
+      <div style="font-family:'Unbounded';font-weight:700">${fmtRub(s.price)}</div>
+      <div style="font-size:13px;color:var(--mut)">${fmtDur(s.min)}</div>
+      <div style="display:flex;gap:8px"><button class="btn sm" onclick="editService('${s.id}')"><i class="ph ph-pencil-simple"></i></button><button class="btn sm" onclick="deleteService('${s.id}')"><i class="ph ph-trash"></i></button></div>`;
+    box.appendChild(el);
+  });
+}
+function openServiceEditor(id=''){
+  const s=id?SERVICES.find(x=>x.id===id):null;
+  const name=prompt('Название услуги',s?.name||'');
+  if(name===null) return;
+  const desc=prompt('Описание услуги',s?.desc||'');
+  if(desc===null) return;
+  const priceRaw=prompt('Цена в ₽',String(s?.price||''));
+  if(priceRaw===null) return;
+  const minRaw=prompt('Длительность в минутах',String(s?.min||60));
+  if(minRaw===null) return;
+  const price=Number(String(priceRaw).replace(/\s/g,''));
+  const min=Number(minRaw);
+  if(!name.trim() || !Number.isFinite(price) || price<0 || !Number.isFinite(min) || min<1){ toast('Проверьте название, цену и длительность',true); return; }
+  if(s){ s.name=name.trim(); s.desc=desc.trim(); s.price=Math.round(price); s.min=Math.round(min); }
+  else {
+    const idNew='svc_'+Date.now();
+    SERVICES.push({id:idNew,name:name.trim(),desc:desc.trim(),price:Math.round(price),min:Math.round(min)});
+    selServices.add(idNew);
+  }
+  state.services=SERVICES.map(x=>({...x}));
+  renderServiceCatalog(); renderServiceAdmin(); renderSlots(); renderSummary(); persist();
+  toast(s?'Услуга обновлена':'Услуга добавлена');
+}
+function editService(id){ openServiceEditor(id); }
+function deleteService(id){
+  const s=SERVICES.find(x=>x.id===id);
+  if(!s) return;
+  if(SERVICES.length<=1){ toast('Нельзя удалить последнюю услугу',true); return; }
+  if(!confirm('Удалить услугу «'+s.name+'»?')) return;
+  SERVICES=SERVICES.filter(x=>x.id!==id);
+  selServices.delete(id);
+  if(!selServices.size && SERVICES[0]) selServices.add(SERVICES[0].id);
+  state.services=SERVICES.map(x=>({...x}));
+  renderServiceCatalog(); renderServiceAdmin(); renderSlots(); renderSummary(); persist();
+  toast('Услуга удалена');
+}
+
+function setFilter(btn){
+  dashFilter = btn.dataset.f;
+  document.querySelectorAll('.chip').forEach(c=>c.classList.toggle('on', c===btn));
+  renderDash();
+}
+
+const ST_LABEL = {new:'Новая', conf:'Подтверждена', done:'Выполнена', cxl:'Отменена'};
+const ST_CLASS = {new:'new', conf:'conf', done:'done', cxl:'cxl'};
+
+function renderDash(){
+  const q = document.getElementById('dashSearch').value.toLowerCase();
+  const rows = state.orders
+    .filter(o => dashFilter==='all' || o.status===dashFilter)
+    .filter(o => !q || (o.name+o.phone+o.car+o.services.map(s=>s.name).join(' ')).toLowerCase().includes(q))
+    .sort((a,b)=> (a.date+a.time).localeCompare(b.date+b.time));
+  const tb = document.getElementById('dashRows');
+  tb.innerHTML = '';
+  document.getElementById('dashEmpty').style.display = rows.length ? 'none' : 'block';
+  document.getElementById('ordTable').style.display = rows.length ? '' : 'none';
+  rows.forEach(o=>{
+    const tr = document.createElement('tr');
+    const dNice = o.date.split('-').reverse().join('.');
+    tr.innerHTML = `
+      <td data-l="Когда"><b>${dNice}</b> · ${o.time}</td>
+      <td data-l="Клиент" class="who"><b>${o.name}</b><span>${o.phone}<br>${o.car}</span>
+        ${o.note?`<span class="ord-note">«${o.note}»</span>`:''}</td>
+      <td data-l="Услуги"><div class="svc-tags">${o.services.map(s=>`<span>${s.name}</span>`).join('')}
+        ${o.duration?`<span style="color:var(--mut)">≈ ${fmtDur(o.duration)}</span>`:''}</div></td>
+      <td data-l="Сумма"><b>${fmtRub(o.total)}</b></td>
+      <td data-l="Статус"><span class="st ${ST_CLASS[o.status]}">${ST_LABEL[o.status]}</span></td>
+      <td data-l="Изменить" class="acts"><select class="st-sel" onchange="setStatus(${o.id}, this.value)">
+        ${Object.keys(ST_LABEL).map(k=>`<option value="${k}" ${k===o.status?'selected':''}>${ST_LABEL[k]}</option>`).join('')}
+      </select></td>
+      <td class="acts"><button class="icon-btn" title="Удалить заявку" onclick="delOrder(${o.id})"><i class="ph ph-trash"></i></button></td>`;
+    tb.appendChild(tr);
+  });
+  document.getElementById('stNew').textContent = state.orders.filter(o=>o.status==='new').length;
+  document.getElementById('stToday').textContent = activeOrders().filter(o=>o.date===todayISO()).length;
+  const weekAgo = Date.now() - 7*864e5;
+  document.getElementById('stRev').innerHTML = activeOrders().filter(o=>(o.status==='conf'||o.status==='done') && new Date(o.created).getTime() > weekAgo)
+    .reduce((s,o)=>s+o.total,0).toLocaleString('ru-RU') + ' <small>₽</small>';
+  document.getElementById('stChats').textContent = state.chats.filter(c=>c.status==='open').length;
+}
+function setStatus(id, st){
+  const o = state.orders.find(x=>x.id===id);
+  if(o){ o.status = st; persist(); renderDash(); toast(`Заявка ${o.name}: ${ST_LABEL[st].toLowerCase()}`); }
+}
+function delOrder(id){
+  const o = state.orders.find(x=>x.id===id);
+  state.orders = state.orders.filter(x=>x.id!==id); persist(); renderDash();
+  toast(`Заявка ${o?o.name:''} удалена`);
+}
+
+/* ---------- Чаты в кабинете владельца ---------- */
+function renderOwnerChats(){
+  const list = document.getElementById('ownerChatList');
+  list.innerHTML = '';
+  const chats = [...state.chats].sort((a,b)=> (b.messages[b.messages.length-1]?.ts||'') .localeCompare(a.messages[a.messages.length-1]?.ts||''));
+  if(!chats.length) list.innerHTML = '<div class="chat-empty" style="padding:30px">Чатов пока нет</div>';
+  const unread = state.chats.filter(c=>c.status==='open' && !lastSeenChats.has(c.id)).length;
+  const badge = document.getElementById('chatBadge');
+  badge.style.display = unread ? 'inline-block' : 'none';
+  badge.textContent = unread;
+  chats.forEach(c=>{
+    const el = document.createElement('div');
+    el.className = 'chat-item' + (c.id===activeChatId && chatRole==='owner' ? ' on':'');
+    const last = c.messages[c.messages.length-1];
+    el.innerHTML = `<div class="top"><b>${c.name}</b>
+        <span class="st ${c.status==='booked'?'conf':'new'}">${c.status==='booked'?'Записан':'Открыт'}</span></div>
+      <div class="last">${last?.offer?'🏷 Предложение: '+fmtRub(last.offer.price) : (last?.text||'')}</div>
+      ${c.status==='open' && !lastSeenChats.has(c.id) ? '<span class="unread dot"></span>' : ''}`;
+    el.onclick = ()=>{ activeChatId = c.id; chatRole='owner'; lastSeenChats.add(c.id);
+      document.getElementById('chatBadge').style.display='none';
+      renderOwnerChats(); renderOwnerChat(); };
+    list.appendChild(el);
+  });
+}
+
+function renderOwnerChat(){
+  const chat = state.chats.find(c=>c.id===activeChatId);
+  const area = document.getElementById('ownerChatArea');
+  if(!chat){ area.innerHTML = '<div class="empty-state"><i class="ph ph-chats-circle"></i><p>Выберите диалог слева</p></div>'; return; }
+  area.innerHTML = `
+    <div class="owner-chat">
+      <div class="chat-head">
+        <i class="ph-fill ph-user" style="color:var(--aqua);font-size:24px"></i>
+        <div class="info"><b>${chat.name}</b><span>${chat.phone} · ${chat.car||'—'}</span></div>
+      </div>
+      <div class="chat-body" id="ownerChatBody"></div>
+      <div class="offer-form">
+        <input type="text" id="ofText" placeholder="Состав услуг (что вход)">
+        <input type="number" id="ofPrice" placeholder="Цена, ₽">
+        <div style="display:flex;gap:8px">
+          <input type="date" id="ofDate" style="min-width:0">
+          <select id="ofTime" style="background:var(--bg);border:1px solid var(--line);color:var(--txt);border-radius:10px;padding:0 8px;outline:none">
+            ${HOURS.map(h=>`<option>${pad(h)}:00</option>`).join('')}
+          </select>
+        </div>
+        <button class="send-offer" onclick="sendOffer()"><i class="ph ph-tag"></i>Отправить предложение цены и времени</button>
+      </div>
+      <div class="chat-input">
+        <input type="text" id="ownerChatInput" placeholder="Сообщение клиенту…" onkeydown="if(event.key==='Enter')sendMsg()">
+        <button onclick="sendMsg()"><i class="ph-fill ph-paper-plane-right"></i></button>
+      </div>
+    </div>`;
+  const body = document.getElementById('ownerChatBody');
+  chat.messages.forEach(m=>{
+    if(m.offer){
+      const card = document.createElement('div'); card.className='offer-card';
+      card.innerHTML = `<div class="t"><i class="ph ph-tag"></i>Ваше предложение</div>
+        <div class="row"><span class="k">Услуги</span><span>${m.offer.text||'—'}</span></div>
+        <div class="row"><span class="k">Цена</span><b>${fmtRub(m.offer.price)}</b></div>
+        <div class="row"><span class="k">Когда</span><span>${m.offer.date?m.offer.date.split('-').reverse().join('.'):'—'} ${m.offer.time||''}</span></div>
+        ${m.offer.accepted?`<div class="accepted"><i class="ph-fill ph-check-circle"></i>Клиент записался</div>`:''}`;
+      body.appendChild(card);
+    } else {
+      const el = document.createElement('div');
+      el.className = 'msg ' + (m.from==='client' ? 'client' : 'owner');
+      el.textContent = m.text;
+      el.appendChild(Object.assign(document.createElement('small'),{textContent:m.ts}));
+      body.appendChild(el);
+    }
+  });
+  body.scrollTop = body.scrollHeight;
+}
+
+function sendOffer(){
+  const chat = state.chats.find(c=>c.id===activeChatId);
+  const text = document.getElementById('ofText').value.trim();
+  const price = parseInt(document.getElementById('ofPrice').value);
+  const date = document.getElementById('ofDate').value;
+  const time = document.getElementById('ofTime').value;
+  if(!price || price<=0){ toast('Укажите цену', true); return; }
+  if(!date){ toast('Укажите дату', true); return; }
+  chat.offer = null;
+  chat.messages.push({from:'owner', text:'', ts: nowTs(), offer:{text, price, date, time, accepted:false}});
+  persist(); renderOwnerChat(); renderOwnerChats();
+  toast('Предложение отправлено клиенту');
+}
+
+/* ================= REVEAL ================= */
+const io = new IntersectionObserver(es=>es.forEach(e=>{ if(e.isIntersecting){ e.target.classList.add('on'); io.unobserve(e.target);} }),{threshold:.12});
+document.querySelectorAll('.reveal').forEach(el=>io.observe(el));
+
+/* ================= CANVAS: ВОДА И ПУЗЫРИ ================= */
+const cv = document.getElementById('waterCanvas'), ctx = cv.getContext('2d');
+let W, H, bubbles = [], sparks = [], mouse = {x:-999, y:-999};
+function resize(){ W = cv.width = cv.offsetWidth * devicePixelRatio; H = cv.height = cv.offsetHeight * devicePixelRatio; }
+resize(); window.addEventListener('resize', resize);
+
+function newBubble(){
+  return { x: Math.random()*W, y: H + 30, r: (2+Math.random()*7)*devicePixelRatio,
+           v: (.3+Math.random()*.8)*devicePixelRatio, wob: Math.random()*Math.PI*2, ws: .01+Math.random()*.03 };
+}
+for(let i=0;i<70;i++){ const b = newBubble(); b.y = Math.random()*H; bubbles.push(b); }
+
+const hero = document.querySelector('.hero');
+hero.addEventListener('mousemove', e=>{
+  const r = cv.getBoundingClientRect();
+  mouse.x = (e.clientX - r.left)*devicePixelRatio;
+  mouse.y = (e.clientY - r.top)*devicePixelRatio;
+});
+hero.addEventListener('mouseleave', ()=>{ mouse.x = -999; });
+
+let t = 0;
+function draw(){
+  t += .016;
+  ctx.clearRect(0,0,W,H);
+  const dpr = devicePixelRatio;
+  bubbles.forEach((b,i)=>{
+    b.y -= b.v; b.wob += b.ws;
+    b.x += Math.sin(b.wob)*.4*dpr;
+    if(b.y < -20) bubbles[i] = newBubble();
+    const dx = b.x-mouse.x, dy = b.y-mouse.y;
+    if(dx*dx+dy*dy < (b.r+10*dpr)**2){
+      for(let k=0;k<6;k++) sparks.push({x:b.x,y:b.y,vx:(Math.random()-.5)*3*dpr,vy:(Math.random()-.5)*3*dpr,l:1});
+      bubbles[i] = newBubble(); return;
+    }
+    ctx.beginPath(); ctx.arc(b.x, b.y, b.r, 0, 7);
+    ctx.strokeStyle = 'rgba(70,224,192,'+(.10 + b.r/(14*dpr)*.16)+')';
+    ctx.lineWidth = 1.2*dpr; ctx.stroke();
+    ctx.beginPath(); ctx.arc(b.x-b.r*.35, b.y-b.r*.35, b.r*.25, 0, 7);
+    ctx.fillStyle = 'rgba(255,255,255,.14)'; ctx.fill();
+  });
+  sparks = sparks.filter(s=>s.l>0);
+  sparks.forEach(s=>{ s.x+=s.vx; s.y+=s.vy; s.l-=.05;
+    ctx.beginPath(); ctx.arc(s.x,s.y,1.6*dpr*s.l,0,7);
+    ctx.fillStyle = `rgba(70,224,192,${s.l*.8})`; ctx.fill(); });
+
+  const baseY = H - 90*dpr;
+  for(let layer=0; layer<3; layer++){
+    const amp = (10+layer*7)*dpr, spd = .5+layer*.35, off = layer*2;
+    ctx.beginPath(); ctx.moveTo(0, H);
+    for(let x=0; x<=W; x+=6*dpr){
+      const nx = x/dpr;
+      const g = Math.exp(-((nx - mouse.x/dpr)**2)/(2*140*140));
+      const y = baseY + layer*16*dpr
+        + Math.sin(nx*.008*spd + t*spd + off)*amp
+        + Math.sin(nx*.02 + t*1.7)*3*dpr
+        - g*(26 - layer*6)*dpr*Math.sin(t*3+off);
+      ctx.lineTo(x, y);
+    }
+    ctx.lineTo(W, H); ctx.closePath();
+    ctx.fillStyle = ['rgba(70,224,192,.05)','rgba(70,224,192,.07)','rgba(70,224,192,.10)'][layer];
+    ctx.fill();
+    ctx.strokeStyle = 'rgba(70,224,192,'+(.28-layer*.07)+')'; ctx.lineWidth = 1*dpr; ctx.stroke();
+  }
+  requestAnimationFrame(draw);
+}
+draw();
+
+/* ================= ИНИЦИАЛИЗАЦИЯ + REALTIME ================= */
+(async ()=>{
+  await loadState();
+  document.querySelectorAll('.svc-opt').forEach(e=>e.classList.toggle('sel', selServices.has(e.dataset.id)));
+  renderServiceCatalog(); renderSlots(); renderSummary(); connectRealtime();
+})();
+window.addEventListener('beforeunload', ()=>{ if(realtimeSource) realtimeSource.close(); });
+</script>
+</body>
+</html>
